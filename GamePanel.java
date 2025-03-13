@@ -77,6 +77,10 @@ public class GamePanel extends JPanel implements Runnable
 
         isPaused = false;
 
+        SoundManager soundManager = SoundManager.getInstance();
+        soundManager.playClip("background", true);
+        soundManager.setVolume("background", 0.7f);
+
         Thread gameThread = new Thread(this);
         gameThread.start();
     }
@@ -189,8 +193,8 @@ public class GamePanel extends JPanel implements Runnable
        
 
        //Erase previous image
-       eraseGame(buffer);
-       //buffer.drawImage(backgroundImage, 0, 0, this.getSize().width, this.getSize().height, null);
+       //eraseGame(buffer);
+       buffer.drawImage(backgroundImage, 0, 0, this.getSize().width, this.getSize().height, null);
 
 
        mango.draw(buffer);;

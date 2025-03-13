@@ -11,6 +11,9 @@ import java.awt.image.BufferedImage;
 */
 
 public class ImageManager {
+	private ImageManager () {}
+
+
 	public static Image loadImage (String fileName) {
 		return new ImageIcon(fileName).getImage();
 	}
