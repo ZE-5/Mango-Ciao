@@ -1,9 +1,8 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 import javax.swing.JPanel;
-import java.awt.Graphics;
+// import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Vector;
 
 public class Laser 
 {
@@ -32,29 +31,31 @@ public class Laser
         this. chargeTime = chargeTime;
         this.fireTime = fireTime;this.chargeDelay = chargeDelay;
         
-        time = 0;
+        time = -1;
     }
     
     
-    public void draw()
+    public void draw(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
-        
+        time++;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
+
         if (time <= chargeTime)
-            g2.setColor(new Color(178/4,34/4,34/4));
+        {
+            g2.setColor(new Color(178/4,34/4,34/4));            
+            g2.fill(laser);
+        }
             
         else if (time <= chargeTime + fireTime)
+        {
             g2.setColor(new Color(178,34,34));
-        
+            g2.fill(laser);
+        }
         else if (time > chargeTime + fireTime + chargeDelay) //reset laser's time
             time = -1;
-            
-        time++;
-            
-        g2.fill(laser);
         
-        g.dispose();
+        // g.dispose();
     }
     
     
@@ -64,15 +65,15 @@ public class Laser
     }
     
     
-    public void erase()
+    public void erase(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(panel.getBackground());
         g2.fill(laser);
         
-        g.dispose();
+        // g.dispose();
     }
     
     

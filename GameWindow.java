@@ -25,13 +25,13 @@ public class GameWindow extends JFrame
     private int hearts, coins;
     
 
-    @SuppressWarnings({"unchecked"})
+    //@SuppressWarnings({"unchecked"})
     public GameWindow() {
         
         hearts = 3;
         coins = 0;
         
-        setTitle ("Mango Chao");
+        setTitle ("Mango Ciao");
         setSize (800, 700);
 
         // create user interface objects
@@ -111,6 +111,7 @@ public class GameWindow extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setVisible(true);
+        gamePanel.initialization();
     }
 
 
@@ -130,9 +131,8 @@ public class GameWindow extends JFrame
             heartPanel.draw(hearts);
             coinPanel.draw(coins);
             
-            gamePanel.grabPanelDimensions();
-            gamePanel.drawAllGameEntities();
-            gamePanel.start();
+            // gamePanel.renderGame();
+            gamePanel.startGame();
         }
         
         
@@ -194,7 +194,7 @@ public class GameWindow extends JFrame
         heartPanel.draw(hearts);
         if (hearts == 0)
         {
-            gamePanel.eraseAllGameEntities();
+            gamePanel.eraseGame();
             gamePanel.drawLoseScreen();
         }
     }

@@ -1,9 +1,8 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 import javax.swing.JPanel;
-import java.awt.Graphics;
+// import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Vector;
 
 public class Barrier extends Thread
 {
@@ -15,17 +14,48 @@ public class Barrier extends Thread
         this.panel = panel;
         barrier = new Rectangle2D.Double(x, y, width, height);
     }
-    
-    
-    public void draw()
+
+
+    public int[] getPosition()
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        int[] pos = {(int) barrier.getX(), (int) barrier.getY()};
+        return pos;
+    }
+
+
+    public int getX()
+    {
+        return (int) barrier.getX();
+    }
+
+
+    public int getY()
+    {
+        return (int) barrier.getY();
+    }
+
+    
+    public int getWidth()
+    {
+        return (int) barrier.getWidth();
+    }
+
+    
+    public int getHeight()
+    {
+        return (int) barrier.getHeight();
+    }
+
+    
+    public void draw(Graphics2D g2)
+    {
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(Color.DARK_GRAY);
         g2.fill(barrier);
         
-        g.dispose();
+        //g.dispose();
     }
     
     
@@ -35,14 +65,14 @@ public class Barrier extends Thread
     }
     
     
-    public void erase()
+    public void erase(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(panel.getBackground());
         g2.fill(barrier);
         
-        g.dispose();
+        // g.dispose();
     }
 }

@@ -1,9 +1,12 @@
+// import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Vector;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Font;
 import java.awt.Color;
 
@@ -12,89 +15,11 @@ import java.awt.Color;
    A component that displays all the game entities
 */
 
-public class GamePanel extends JPanel {
-    
-   private class UpdateLoop extends Thread
-   {
-       private boolean isRunning;
-       
-       public void run()
-       {
-           isRunning = true;
-           try{
-               while (isRunning)
-               {
-                   //update Enitiies
-                   updateGameEntities();
-                   
-                   //check barrier collision
-                   resolveBarrierCollisions();
-                   
-                   //check coin collision
-                   Coin collidedCoin = coinCollision();
-                   if (collidedCoin != null)
-                   {
-                       collidedCoin.erase();
-                       coins.remove(collidedCoin);
-                       gameWindow.addCoin();
-                   }
-                   
-                   //check if door was reached
-                   if (doorCollision())
-                   {
-                       eraseAllGameEntities();
-                       level++;
-                       setLevel();
-                       
-                       if (isRunning)
-                       {
-                           resetMangoJumping();
-                           drawAllGameEntities();   
-                       }
-                   }
-                   //check hazard collision and draw accordingly
-                   else if (spikeCollision() || laserCollision())
-                   {
-                       eraseAllGameEntities();
-                       drawAllGameEntities();
-                       sleep(100);
-                       
-                       mangoDied();
-                       
-                       if (isRunning)
-                       {
-                           eraseAllGameEntities();
-                           drawAllGameEntities();   
-                       }
-                   }
-                   else 
-                   {
-                       eraseMango();
-                       
-                       eraseLasers();
-                       drawLasers();
-                       
-                       drawMango();
-                       mangoPos = mango.getPosition();
-                   }
-                       
-                   sleep(40);
-               }
-            }
-           catch (InterruptedException e)
-           {
-               
-           }
-       }
-       
-       
-       public void stopRunning()
-       {
-           isRunning = false;
-       }
-   }
-   
+public class GamePanel extends JPanel implements Runnable 
+{
    private GameWindow gameWindow;
+
+   private boolean isRunning, isPaused;
    
    private int level;
    
@@ -104,15 +29,18 @@ public class GamePanel extends JPanel {
    private Vector<Laser> lasers;
    private Door door;
    private boolean[] keys;
-   private UpdateLoop updateLoop;
 
    // Variables to govern Mango (the player)
    private Mango mango;
-   private int[] mangoPos; // {x, y}
-   private int [] defaultMangoPos;
+   private int [] mangoStartingPosition;
    private boolean mangoIsJumping;
    private int mangoCurrentJumpHeight, mangoMaxJumpHeight;
+   private BufferedImage bufferedImage;
+   boolean lose, win;
+
+   private Image backgroundImage;
    
+
    public GamePanel (GameWindow gameWindow) {
         this.gameWindow = gameWindow;
         
@@ -124,14 +52,54 @@ public class GamePanel extends JPanel {
         lasers = new Vector<>();
         
         this.keys = new boolean[3];
-        
-        updateLoop = new UpdateLoop();
-   }
+
+        isRunning = false;
+        isPaused = false;
+
+        lose = win = false;
+
+        createGameEntities();
+        backgroundImage = ImageManager.loadImage("Images/Background.png");
+    }
+
+
+    public void initialization()
+    {
+        this.bufferedImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+        mango.grabPanelDimensions();
+    }
+
+
+    public void startGame()
+    {
+        if (isRunning)
+            return;
+
+        isPaused = false;
+
+        Thread gameThread = new Thread(this);
+        gameThread.start();
+    }
    
    
-   public void start()
+    //Update loop
+   public void run()
    {
-       updateLoop.start();
+       isRunning = true;
+       while (isRunning) 
+       {
+           if (!isPaused)
+                updateGame();
+           renderGame();
+           try
+           {
+               Thread.sleep(40);
+           }
+           catch (Exception e)
+           {
+               
+           }
+       }
    }
 
 
@@ -140,21 +108,15 @@ public class GamePanel extends JPanel {
        keys[num] = val;
    }
    
-   
-   public void grabPanelDimensions()
-   {
-       mango.grabPanelDimensions();
-   }
-   
    public void createGameEntities() {
-       mango = new Mango (this, barriers, spikes); 
+       mango = new Mango (this); 
        
        if (mango != null) //initializing variables associated with Mango
        {
            mangoIsJumping = false;
            mangoCurrentJumpHeight = 0;
            mangoMaxJumpHeight = mango.getJumpHeight();
-           defaultMangoPos = mangoPos = mango.getPosition();
+           mangoStartingPosition = mango.getPosition();
        }
        
        //Setting up first level
@@ -165,10 +127,12 @@ public class GamePanel extends JPanel {
 
    public void drawWinScreen()
    {
+       win = true;
+       isRunning = false;
+       eraseGame();
+
        Graphics g = this.getGraphics();
        Graphics2D g2 = (Graphics2D) g;
-       
-       updateLoop.stopRunning();
        
        g2.setColor(Color.GREEN);
        Font f = new Font ("Bookman Old Style", Font.BOLD, 40);
@@ -181,10 +145,12 @@ public class GamePanel extends JPanel {
    
    public void drawLoseScreen()
    {
+       lose = true;
+       isRunning = false;
+       eraseGame();
+
        Graphics g = this.getGraphics();
-       Graphics2D g2 = (Graphics2D) g;
-       
-       updateLoop.stopRunning();       
+       Graphics2D g2 = (Graphics2D) g;    
        
        g2.setColor(Color.RED);
        Font f = new Font ("Bookman Old Style", Font.BOLD, 40);
@@ -193,49 +159,86 @@ public class GamePanel extends JPanel {
               
        g2.dispose();
    }
-   
-   
-   public void drawAllGameEntities() {
 
-       drawMango();
+
+   public void updateGame()
+   {
+       //update Entities
+       updateMango();        
+       //check barrier collision
+       resolveBarrierCollisions();
+       
+       //check coin collision
+       resolveCoinCollisions();
+       
+       //check if door was reached
+       resolveDoorCollisions();
+       
+
+       //check hazard collision and draw accordingly
+       if (spikeCollision() || laserCollision())
+       {   
+           mangoDied();
+       }
+   }
+   
+   
+   public void renderGame()
+   {
+       Graphics2D buffer = (Graphics2D) bufferedImage.getGraphics();
+       
+
+       //Erase previous image
+       eraseGame(buffer);
+       //buffer.drawImage(backgroundImage, 0, 0, this.getSize().width, this.getSize().height, null);
+
+
+       mango.draw(buffer);;
        
        for (Barrier b: barriers)
-           b.draw();
+           b.draw(buffer);
        
        for (Spike s: spikes)
-           s.draw();
+           s.draw(buffer);
        
-       drawLasers();
+       for (Laser l: lasers)
+           l.draw(buffer);
            
        for (Coin c: coins)
-           c.draw();
+           c.draw(buffer);
            
-       door.draw();
+       door.draw(buffer);
+
+       //Placed here incase the loss or win occurs while the buffer image is being generated.
+       //It will simply not output the image.
+       if (lose || win)
+            return;
+
+       Graphics2D g2 = (Graphics2D) this.getGraphics();
+       g2.drawImage(bufferedImage, 0, 0, this.getSize().width, this.getSize().height, null);
+       g2.dispose();
+       buffer.dispose();
    }
    
    
-   public void eraseAllGameEntities() {
+   public void eraseGame() 
+   {
        Graphics g = (Graphics) this.getGraphics();
        Graphics2D g2 = (Graphics2D) g;
+       g2.setColor(this.getBackground());
        g2.fill(new Rectangle2D.Double(0, 0, this.getSize().width, this.getSize().height));
-   }
-   
-   
-   public void drawMango()
-   {
-       if (mango != null)
-           mango.draw();
-   }
-   
-   
-   public void eraseMango()
-   {
-       if (mango != null)
-           mango.erase(mangoPos[0], mangoPos[1]);
+       g.dispose();
    }
 
 
-   public void updateGameEntities() {
+   public void eraseGame(Graphics2D g2) 
+   {
+        g2.setColor(this.getBackground());
+        g2.fill(new Rectangle2D.Double(0, 0, this.getSize().width, this.getSize().height));
+   }
+
+
+   public void updateMango() {
         
         //UPDATING AMON START
 
@@ -306,23 +309,21 @@ public class GamePanel extends JPanel {
        {
            Rectangle2D barrierBoundingBox = b.getBoundingBox();
            
-           if (keys[2] && barrierBoundingBox.intersectsLine(mango.getLeftLine())) //left side intersects
-               mango.move(1);
+           if (keys[2] && barrierBoundingBox.intersectsLine(mango.getLeftLine())) //left side of mango intersects
+               mango.setX(b.getX() + b.getWidth());
+               
            
            
            if (keys[1] && barrierBoundingBox.intersectsLine(mango.getRightLine())) //right side intersects
-               mango.move(2);
+               mango.setX(b.getX() - mango.getWidth());
+
                
            if (mangoIsJumping && barrierBoundingBox.intersectsLine(mango.getTopLine())) //head intersects
+            {
                resetMangoJumping();
+               mango.setY(b.getY() + b.getHeight());
+            }
        }
-       
-       //ISSUE: this only worked for the FIRST if statement; the other direction let it phase through the wall
-               //This only occured when the character was under a certain width
-       //REASON: the width was <= the movement amount (dx). This allowed both left and sides to enter the barrier and trigger,
-               //which resulted in no displacement to move the character out of the barrier.
-       //SOLUTION: While adjusting the character size and movement displacement will fix this, to allow for freedom of character design,
-               //the keys were inspected to determine the direction the character was moving and only check for collisions in that direction.
    }
    
    
@@ -330,8 +331,7 @@ public class GamePanel extends JPanel {
    {
        gameWindow.minusHeart();
        resetMangoJumping();
-       mango.place(defaultMangoPos[0], defaultMangoPos[1]);
-       mangoPos = mango.getPosition();
+       mango.place(mangoStartingPosition[0], mangoStartingPosition[1]);
        resetLasers();
    }
    
@@ -350,28 +350,35 @@ public class GamePanel extends JPanel {
    }
    
    
-   public Coin coinCollision() //detects if a coin has been touched and returns it for deletion
+   public void resolveCoinCollisions() //detects if a coin has been touched and returns it for deletion
    {
        for (Rectangle2D.Double mangoHitBox: mango.getBounds())
        {
            for (Coin c: coins)
            {
                if ((c.getBoundingEllipse()).intersects(mangoHitBox))
-                   return c;
+               {
+                    //collidedCoin.erase();
+                    coins.remove(c);
+                    gameWindow.addCoin();
+                    break;
+               }
            }
        }
-       return null;
    }
    
    
-   public boolean doorCollision()
+   public void resolveDoorCollisions()
    {
        for (Rectangle2D.Double mangoHitBox: mango.getBounds())
        {
            if (door.getBoundingRectangle().intersects(mangoHitBox))
-               return true;
+           {
+               level++;
+               setLevel();
+               resetMangoJumping();
+           }
        }
-       return false;
    }
    
    
@@ -395,21 +402,7 @@ public class GamePanel extends JPanel {
            l.reset();
    }
    
-   
-   public void drawLasers()
-   {
-       for (Laser l: lasers)
-           l.draw();
-   }
-   
-   
-   public void eraseLasers()
-   {
-       for (Laser l: lasers)
-           l.erase();
-   }
-   
-   
+
    //level design
    public void setLevel()
    {
@@ -422,7 +415,7 @@ public class GamePanel extends JPanel {
        {
            case 1:
                mango.place(50, 350);
-               defaultMangoPos = mangoPos = mango.getPosition();
+               mangoStartingPosition = mango.getPosition();
                door = new Door(this, 100, 100);
                
                barriers.add(new Barrier(this, 100,350,400,30));
@@ -446,7 +439,7 @@ public class GamePanel extends JPanel {
            case 2:
                
                mango.place(100, 400);
-               defaultMangoPos = mangoPos = mango.getPosition();
+               mangoStartingPosition = mango.getPosition();
                
                door = new Door(this, 0, 0);
                
@@ -471,7 +464,7 @@ public class GamePanel extends JPanel {
                break;
                
            default:
-               updateLoop.stopRunning();
+            //    isRunning = false;
                drawWinScreen();
        }    
    }

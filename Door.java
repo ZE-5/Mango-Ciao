@@ -1,9 +1,8 @@
 import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 import javax.swing.JPanel;
-import java.awt.Graphics;
+// import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Vector;
 
 public class Door //to go to next stage
 {
@@ -25,10 +24,10 @@ public class Door //to go to next stage
     }
     
     
-    public void draw()
+    public void draw(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(new Color(150, 84, 82));
         g2.fill(door);
@@ -39,7 +38,7 @@ public class Door //to go to next stage
         g2.fill(new Rectangle2D.Double(door.getX() + widthReduction, door.getY() + heightReduction, 
                                        door.getWidth() - widthReduction * 2, door.getHeight() - heightReduction * 2));
         
-        g.dispose();
+        // g.dispose();
     }
     
     
@@ -49,14 +48,14 @@ public class Door //to go to next stage
     }
     
     
-    public void erase()
+    public void erase(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(panel.getBackground());
         g2.fill(door);
         
-        g.dispose();
+        // g.dispose();
     }
 }

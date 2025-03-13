@@ -1,9 +1,8 @@
 import java.awt.Polygon;
 import java.awt.Color;
 import javax.swing.JPanel;
-import java.awt.Graphics;
+// import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Vector;
 
 
 public class Spike 
@@ -79,15 +78,15 @@ public class Spike
     }
     
     
-    public void draw()
+    public void draw(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(Color.LIGHT_GRAY);
         g2.fill(spike);
         
-        g.dispose();
+        // g.dispose();
     }
     
     
@@ -97,14 +96,14 @@ public class Spike
     }
     
     
-    public void erase()
+    public void erase(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(panel.getBackground());
         g2.fill(spike);
         
-        g.dispose();
+        // g.dispose();
     }
 }

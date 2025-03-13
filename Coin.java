@@ -1,9 +1,8 @@
 import java.awt.geom.Ellipse2D;
 import java.awt.Color;
 import javax.swing.JPanel;
-import java.awt.Graphics;
+// import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Vector;
 
 public class Coin 
 {
@@ -19,10 +18,10 @@ public class Coin
     }
     
     
-    public void draw()
+    public void draw(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(Color.YELLOW);
         g2.fill(coin);
@@ -32,7 +31,7 @@ public class Coin
         Ellipse2D.Double centre = new Ellipse2D.Double(coin.getX() + 4, coin.getY() + 4, 12, 12);
         g2.fill(centre);
         
-        g.dispose();
+        //g.dispose();
     }
     
     
@@ -42,14 +41,14 @@ public class Coin
     }
     
     
-    public void erase()
+    public void erase(Graphics2D g2)
     {
-        Graphics g = panel.getGraphics();
-        Graphics2D g2 = (Graphics2D) g;
+        // Graphics g = panel.getGraphics();
+        // Graphics2D g2 = (Graphics2D) g;
         
         g2.setColor(panel.getBackground());
         g2.fill(coin);
         
-        g.dispose();
+        //g.dispose();
     }
 }

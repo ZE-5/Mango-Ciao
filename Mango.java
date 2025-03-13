@@ -1,6 +1,6 @@
 import java.awt.Dimension;
 import java.awt.Color;
-import java.awt.Graphics;
+// import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.*;
 import javax.swing.JPanel;
@@ -18,23 +18,19 @@ public class Mango  {
    private int dx;
    private int dy;
    
-   private int defaultX, defaultY;
-   
    
    private int jumpHeight, time;
    
-   private boolean isJumping, isRunning, isFacingRight;
+   private boolean isFacingRight;
    
 
    private Color backgroundColour;
    private Dimension dimension;
    
-   private Vector<Barrier> barriers;
-   private Vector<Spike> spikes;
-   
    
 
-   public Mango (JPanel p, Vector<Barrier> barriers, Vector<Spike> spikes) {
+   public Mango (JPanel p) 
+   {
       panel = p;
 
       backgroundColour = panel.getBackground ();
@@ -45,19 +41,26 @@ public class Mango  {
       width = 40;
       height = 50;
       
-      this.barriers = barriers;
-      this.spikes = spikes;
-      isJumping = false;
       time = 0;
       
       isFacingRight = true; //starting direction
       jumpHeight = 13; //self-explanatory
    }
+
+   public int getHeight()
+   {
+       return height;
+   }
+
+   public int getWidth()
+   {
+       return width;
+   }
    
    
    public void grabPanelDimensions()
    {
-       this.dimension = panel.getSize();
+       this.dimension = this.panel.getSize();
    }
    
    public int getJumpHeight()
@@ -71,21 +74,40 @@ public class Mango  {
        int[] pos = {x, y};
        return pos;
    }
-   
-   public int getHeight()
+
+
+   public int getX()
    {
-       return height;
+       return x;
    }
-    
+
+
+   public int getY()
+   {
+       return y;
+   }
+
+
+   public void setX(int x)
+   {
+       this.x = x;
+   }
+
+
+   public void setY(int y)
+   {
+       this.y = y;
+   }
    
-   public void draw()
+   
+   public void draw(Graphics2D g2)
    {
       int maxTime = 14;
       
-      Graphics g = panel.getGraphics ();
-      Graphics2D g2 = (Graphics2D) g;
+    //   Graphics g = panel.getGraphics ();
+    //   Graphics2D g2 = (Graphics2D) g;
       
-      //troubeshooting code for drawing Mango
+      //troubleshooting code for drawing Mango
       //g2.setColor(Color.WHITE);
       //g2.draw(new Rectangle2D.Double(x, y, width-1, height-1));
       
@@ -147,19 +169,19 @@ public class Mango  {
       if (time == maxTime)
           time = 0;
             
-      g.dispose();
+    //   g.dispose();
    }
    
 
-    public void erase (int x, int y)
+    public void erase (Graphics2D g2, int x, int y)
     {
-      Graphics g = panel.getGraphics ();
-      Graphics2D g2 = (Graphics2D) g;
+    //   Graphics g = panel.getGraphics ();
+    //   Graphics2D g2 = (Graphics2D) g;
 
       g2.setColor (backgroundColour);
       g2.fill (new Rectangle2D.Double (x, y, width, height));
 
-      g.dispose();
+    //   g.dispose();
    }
    
    
@@ -222,7 +244,7 @@ public class Mango  {
    }
    
    
-   //These functions give the line which correspond to Mango's top, left or riggt most sides with no offset off of the character's dimensions
+   //These functions give the line which correspond to Mango's top, left or right most sides with no offset off of the character's dimensions
    //These lines are shrunk a little to ensure they trigger when necessary
    public Line2D.Double getRightLine()
    {
