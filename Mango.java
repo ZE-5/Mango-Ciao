@@ -2,6 +2,7 @@ import java.awt.Dimension;
 import java.awt.Color;
 // import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.*;
 import javax.swing.JPanel;
 import java.util.Vector;
@@ -22,10 +23,12 @@ public class Mango  {
    private int jumpHeight, time;
    
    private boolean isFacingRight;
-   
+   private boolean isOnGround;
 
    private Color backgroundColour;
    private Dimension dimension;
+
+   private Image jumpingRight;
    
    
 
@@ -45,6 +48,8 @@ public class Mango  {
       
       isFacingRight = true; //starting direction
       jumpHeight = 13; //self-explanatory
+
+      jumpingRight = ImageManager.loadImage("Images/JumpingMangoRight.png");
    }
 
    public int getHeight()
@@ -98,10 +103,26 @@ public class Mango  {
    {
        this.y = y;
    }
+
+
+   public void setIsOnGround(boolean isOnGround)
+   {
+       this.isOnGround = isOnGround;
+   }
    
    
    public void draw(Graphics2D g2)
    {
+        if (!isOnGround)
+        {
+            if (isFacingRight)
+                g2.drawImage(jumpingRight, x + width - jumpingRight.getWidth(null), y, null);
+            else
+                g2.drawImage(jumpingRight, x + jumpingRight.getWidth(null), y, -jumpingRight.getWidth(null), jumpingRight.getHeight(null), null);
+            return;
+        }
+
+
       int maxTime = 14;
       
     //   Graphics g = panel.getGraphics ();

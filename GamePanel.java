@@ -250,17 +250,18 @@ public class GamePanel extends JPanel implements Runnable
             return;
             
         boolean mangoOnFloor = isMangoOnFloor();
+        mango.setIsOnGround(mangoOnFloor);
         
         //Handling JUMPING and FALLING
         if (mangoIsJumping)
         {
             mango.move(0);
-            if (++mangoCurrentJumpHeight == mangoMaxJumpHeight || (mango.getPosition())[1] == 0)
+            if (++mangoCurrentJumpHeight == mangoMaxJumpHeight || (mango.getPosition())[1] == 0) //hit an object above Mango
             {
                 resetMangoJumping();
             }
         }
-        else if (!mangoOnFloor) //Mango is neither jumping nor standing on a floor
+        else if (!mangoOnFloor) //Mango is neither jumping nor standing on a floor, i.e. falling
         {
             mango.move(3);
         }
