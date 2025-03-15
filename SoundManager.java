@@ -63,7 +63,7 @@ public class SoundManager {				// a Singleton class
 	}
 
 
-	public void playClip(String title, boolean looping) {
+	private void startClip(String title, boolean looping) {
 
 		Clip clip = getClip(title);
 		if (clip != null) {
@@ -76,6 +76,29 @@ public class SoundManager {				// a Singleton class
 	}
 
 
+	//plays clip using default volume
+	public void playClip(String title, boolean looping) {
+		startClip(title, looping);
+		setVolume(title, 0.7f); //default volume value
+	}
+
+	//same as above but also looping is false by default
+	public void playClip(String title) {
+		startClip(title, false);
+	}
+
+	
+	//allow clip to be played and volume to be set
+	public void playClip(String title, boolean looping, float volume) {
+		startClip(title, looping);
+		setVolume(title, volume);
+	}
+
+
+	//The above but looping set to false if it is not set
+	public void playClip(String title, float volume) {
+		playClip(title, false, volume);
+	}
 	public void stopClip(String title) {
 		Clip clip = getClip(title);
 		if (clip != null) {

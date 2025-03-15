@@ -144,6 +144,10 @@ public class GamePanel extends JPanel implements Runnable
        g2.drawString("You Win!", 200, 200);
        
        g2.dispose();
+
+       SoundManager soundManager = SoundManager.getInstance();
+       soundManager.stopClip("background");
+       soundManager.playClip("win", false);
    }
    
    
@@ -162,6 +166,10 @@ public class GamePanel extends JPanel implements Runnable
        g2.drawString("Loser!", 200, 200);
               
        g2.dispose();
+
+       SoundManager soundManager = SoundManager.getInstance();
+       soundManager.stopClip("background");
+       soundManager.playClip("lose", false);
    }
 
 
@@ -334,6 +342,8 @@ public class GamePanel extends JPanel implements Runnable
    
    public void mangoDied()
    {
+       
+       SoundManager.getInstance().playClip("hurt", 0.7f);
        gameWindow.minusHeart();
        resetMangoJumping();
        mango.place(mangoStartingPosition[0], mangoStartingPosition[1]);
