@@ -1,20 +1,32 @@
 import java.awt.geom.Rectangle2D;
-import java.awt.Color;
+// import java.awt.Color;
 import javax.swing.JPanel;
 // import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 
 public class Door //to go to next stage
 {
     //int x, y, height, width, direction;
     
-    Rectangle2D.Double door;
-    JPanel panel;
+    private Rectangle2D.Double door;
+    private JPanel panel;
     
+    private Image doorImage;
+    private boolean isVisible;
+
     public Door(JPanel panel, int x, int y, int width, int height)
     {
         this.panel = panel;
         this.door = new Rectangle2D.Double (x, y, width, height);
+
+        doorImage = ImageManager.loadImage("Images/Door.png");
+        isVisible = false;
+    }
+
+
+    public void setVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
     
     
@@ -26,9 +38,13 @@ public class Door //to go to next stage
     
     public void draw(Graphics2D g2)
     {
+        if (!isVisible)
+            return;
+            
+        g2.drawImage(doorImage, (int) door.getX(), (int) door.getY(), (int) door.getWidth(), (int) door.getHeight(), null);
         // Graphics g = panel.getGraphics();
         // Graphics2D g2 = (Graphics2D) g;
-        
+        /*
         g2.setColor(new Color(150, 84, 82));
         g2.fill(door);
         
@@ -37,7 +53,7 @@ public class Door //to go to next stage
         int heightReduction = (int) door.getHeight()/6;
         g2.fill(new Rectangle2D.Double(door.getX() + widthReduction, door.getY() + heightReduction, 
                                        door.getWidth() - widthReduction * 2, door.getHeight() - heightReduction * 2));
-        
+        */
         // g.dispose();
     }
     

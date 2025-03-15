@@ -8,8 +8,6 @@ public class SoundManager {				// a Singleton class
 
 	private static SoundManager instance = null;	// keeps track of Singleton instance
 
-	private float volume;
-
 	private SoundManager () {
 
 		Clip clip;
@@ -19,8 +17,6 @@ public class SoundManager {				// a Singleton class
 
 		clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
 		clips.put("background", clip);
-
-		volume = 1.0f;
 	}
 
 

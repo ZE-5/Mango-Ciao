@@ -375,6 +375,10 @@ public class GamePanel extends JPanel implements Runnable
    
    public void resolveDoorCollisions()
    {
+       if (!coins.isEmpty())
+           return;
+
+       door.setVisible(true);
        for (Rectangle2D.Double mangoHitBox: mango.getBounds())
        {
            if (door.getBoundingRectangle().intersects(mangoHitBox))
