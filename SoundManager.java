@@ -8,19 +8,27 @@ public class SoundManager {				// a Singleton class
 
 	private static SoundManager instance = null;	// keeps track of Singleton instance
 
-	private float volume;
-
 	private SoundManager () {
 
 		Clip clip;
 
 		clips = new HashMap<String, Clip>();
 
+		String names[] = {
+			"background.wav",
+			"lose.wav",
+			"win.wav",
+			"hurt.wav",
+			"laser.wav",
+			"portal.wav"
+		};
 
-		clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
-		clips.put("background", clip);
-
-		volume = 1.0f;
+		for (int i = 0; i < names.length; i++) {
+			clip = loadClip("Sounds/" + names[i]);
+			clips.put(names[i].substring(0, names[i].lastIndexOf('.')), clip);
+		}
+		// clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
+		// clips.put("background", clip);
 	}
 
 
@@ -43,7 +51,7 @@ public class SoundManager {				// a Singleton class
     			clip.open(audioIn);
 		}
 		catch (Exception e) {
- 			System.out.println ("Error opening sound files: " + e);
+ 			System.out.println ("Error opening sound files " + fileName + ": " + e);
 		}
     		return clip;
     	}
