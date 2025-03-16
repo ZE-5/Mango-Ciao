@@ -20,6 +20,8 @@ public class Laser
     
     private BufferedImage buffer;
     private int alpha;
+
+    private boolean playSound;
     
     public Laser(JPanel panel, int x, int y, int width, int height, int chargeTime, int fireTime)
     {
@@ -41,6 +43,7 @@ public class Laser
         alpha = 255;
 
         time = -1;
+        playSound = true;
     }
     
     
@@ -93,7 +96,11 @@ public class Laser
             // }
             g2.drawImage(laserImages[4], (int) laser.getX(), (int) laser.getY(), (int) laser.getWidth(), (int) laser.getHeight(), null);
 
-            
+            if (playSound)
+            {
+                SoundManager.getInstance().playClip("laser", 0.6f);
+                playSound = false;
+            }
             
             
         }
@@ -101,12 +108,14 @@ public class Laser
         else if (time <= chargeTime + fireTime + chargeDelay) //laser is cooling down
         {
             g2.drawImage(disappear(5), (int) laser.getX(), (int) laser.getY(), (int) laser.getWidth(), (int) laser.getHeight(), null);
+            playSound = true;
         }
 
         else if (time > chargeTime + fireTime + chargeDelay) //reset laser's time
         {
             time = -1;
             alpha = 255;
+            // playSound = true;
         }
         
         // g.dispose();
