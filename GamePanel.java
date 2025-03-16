@@ -19,7 +19,7 @@ public class GamePanel extends JPanel implements Runnable
 {
    private GameWindow gameWindow;
 
-   private boolean isRunning, isPaused;
+   private boolean isRunning;
    
    private int level;
    
@@ -54,9 +54,9 @@ public class GamePanel extends JPanel implements Runnable
         this.keys = new boolean[3];
 
         isRunning = false;
-        isPaused = false;
-
         lose = win = false;
+
+        level = 1;
 
         createGameEntities();
         backgroundImage = ImageManager.loadImage("Images/Background.png");
@@ -75,14 +75,41 @@ public class GamePanel extends JPanel implements Runnable
         if (isRunning)
             return;
 
-        isPaused = false;
-
         SoundManager soundManager = SoundManager.getInstance();
         soundManager.playClip("background", true);
         soundManager.setVolume("background", 0.7f);
 
         Thread gameThread = new Thread(this);
         gameThread.start();
+    }
+
+
+    public void restartGame()
+    {
+
+        level = 1;
+        setLevel();
+        gameWindow.setCoins(0);
+        gameWindow.setHearts(3);
+        
+        lose = win = false;
+        
+        SoundManager soundManager = SoundManager.getInstance();
+        soundManager.stopAllClips();
+        soundManager.playClip("background", true);
+        soundManager.setVolume("background", 0.7f);
+        resetMangoJumping();
+        mango.place(mangoStartingPosition[0], mangoStartingPosition[1]);
+        resetLasers();
+        mango.setFacingRight(true);
+
+        
+        if (!isRunning)
+        {
+            isRunning = true;
+            Thread gameThread = new Thread(this);
+            gameThread.start();
+        }
     }
    
    
@@ -92,8 +119,7 @@ public class GamePanel extends JPanel implements Runnable
        isRunning = true;
        while (isRunning) 
        {
-           if (!isPaused)
-                updateGame();
+           updateGame();
            renderGame();
            try
            {
@@ -124,7 +150,6 @@ public class GamePanel extends JPanel implements Runnable
        }
        
        //Setting up first level
-       level = 1;
        setLevel();
    }
 
@@ -473,8 +498,10 @@ public class GamePanel extends JPanel implements Runnable
                spikes.add(new Spike(this, 300, 550, 0));
                spikes.add(new Spike(this, 700, 250, 2));
                
-               lasers.add(new Laser(this, 450, 0, 50, 400, 10, 10, 10));
-               lasers.add(new Laser(this, 0, 50, 700, 20, 10, 10, 10));
+               lasers.add(new Laser(this, 450, 0, 50, 400, 10, 10, 10)); //right        
+               lasers.add(new Laser(this, 350, 0, 50, 330, 40, 10, 10)); //middle
+               lasers.add(new Laser(this, 200, 0, 50, 500, 10, 10, 10)); //left
+            //    lasers.add(new Laser(this, 0, 50, 700, 20, 10, 10, 10));
                
                coins.add(new Coin(this, 275, 500));
                coins.add(new Coin(this, 670, 440));
