@@ -15,6 +15,8 @@ public class Door //to go to next stage
     private Image doorImage;
     private boolean isVisible;
 
+    private boolean playSound;
+
     public Door(JPanel panel, int x, int y, int width, int height)
     {
         this.panel = panel;
@@ -22,6 +24,7 @@ public class Door //to go to next stage
 
         doorImage = ImageManager.loadImage("Images/Door.png");
         isVisible = false;
+        playSound = true;
     }
 
 
@@ -40,7 +43,13 @@ public class Door //to go to next stage
     {
         if (!isVisible)
             return;
-            
+        
+        if (playSound)
+        {
+            playSound = false;
+            SoundManager.getInstance().playClip("portal", 0.7f);
+        }
+
         g2.drawImage(doorImage, (int) door.getX(), (int) door.getY(), (int) door.getWidth(), (int) door.getHeight(), null);
         // Graphics g = panel.getGraphics();
         // Graphics2D g2 = (Graphics2D) g;

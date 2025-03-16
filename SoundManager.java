@@ -10,28 +10,55 @@ public class SoundManager {				// a Singleton class
 
 	private SoundManager () {
 
+		loadAllClips();
+
+
+		// clip = loadClip("Sounds/background.wav");
+		// clips.put("background", clip);
+
+		// clip = loadClip("Sounds/background.wav");
+		// clips.put("background", clip);
+	}
+
+
+	public void loadAllClips () 
+	{
 		Clip clip;
 
 		clips = new HashMap<String, Clip>();
+		
 
 		String names[] = {
-			"background.wav",
-			"lose.wav",
-			"win.wav",
+			// "background.wav",
+			// "lose.wav",
+			// "win.wav",
 			"hurt.wav",
 			"laser.wav",
+			//TODO add jump
+			// "jump.wav",
 			"portal.wav"
 		};
+
 
 		for (int i = 0; i < names.length; i++) {
 			clip = loadClip("Sounds/" + names[i]);
 			clips.put(names[i].substring(0, names[i].lastIndexOf('.')), clip);
 		}
-		// clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
-		// clips.put("background", clip);
 
-		// clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
-		// clips.put("background", clip);
+		
+		clip = loadClip("Sounds/background" + random(1, 3) + ".wav");
+		clips.put("background", clip);
+
+		clip = loadClip("Sounds/lose" + random(1, 3) + ".wav");
+		clips.put("lose", clip);
+
+		clip = loadClip("Sounds/win" + random(1, 2) + ".wav");
+		clips.put("win", clip);
+	}
+
+
+	private int random (int min, int max) {
+		return (int) (Math.random() * (max - min + 1) + min);
 	}
 
 
@@ -69,7 +96,7 @@ public class SoundManager {				// a Singleton class
 	private void startClip(String title, boolean looping) {
 
 		Clip clip = getClip(title);
-		if (clip != null) {
+		if (clip != null && !clip.isRunning()) {
 			clip.setFramePosition(0);
 			if (looping)
 				clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -81,20 +108,20 @@ public class SoundManager {				// a Singleton class
 
 	//plays clip using default volume
 	public void playClip(String title, boolean looping) {
-		startClip(title, looping);
 		setVolume(title, 0.7f); //default volume value
+		startClip(title, looping);
 	}
 
 	//same as above but also looping is false by default
 	public void playClip(String title) {
-		startClip(title, false);
+		playClip(title, false);
 	}
 
 	
 	//allow clip to be played and volume to be set
 	public void playClip(String title, boolean looping, float volume) {
-		startClip(title, looping);
 		setVolume(title, volume);
+		startClip(title, looping);
 	}
 
 

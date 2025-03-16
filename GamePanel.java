@@ -96,8 +96,8 @@ public class GamePanel extends JPanel implements Runnable
         
         SoundManager soundManager = SoundManager.getInstance();
         soundManager.stopAllClips();
-        soundManager.playClip("background", true);
-        soundManager.setVolume("background", 0.7f);
+        soundManager.loadAllClips();
+        soundManager.playClip("background", true, 0.7f);
         resetMangoJumping();
         mango.place(mangoStartingPosition[0], mangoStartingPosition[1]);
         resetLasers();
@@ -482,7 +482,7 @@ public class GamePanel extends JPanel implements Runnable
                
            case 2:
                
-               mango.place(100, 400);
+               mango.place(10, 400);
                mangoStartingPosition = mango.getPosition();
                
                door = new Door(this, 0, 0);
