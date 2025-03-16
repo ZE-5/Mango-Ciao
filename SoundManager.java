@@ -29,6 +29,9 @@ public class SoundManager {				// a Singleton class
 		}
 		// clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
 		// clips.put("background", clip);
+
+		// clip = loadClip("Sounds/background.wav");	// played when an alien is regenerated at the top of the JPanel
+		// clips.put("background", clip);
 	}
 
 
