@@ -83,7 +83,7 @@ public class Spike
         // Graphics g = panel.getGraphics();
         // Graphics2D g2 = (Graphics2D) g;
         
-        g2.setColor(Color.LIGHT_GRAY);
+        g2.setColor(Color.WHITE);
         g2.fill(spike);
         
         // g.dispose();

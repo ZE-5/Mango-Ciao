@@ -52,7 +52,7 @@ public class Barrier extends Thread
         // Graphics g = panel.getGraphics();
         // Graphics2D g2 = (Graphics2D) g;
         
-        g2.setColor(Color.DARK_GRAY);
+        g2.setColor(Color.GRAY);
         g2.fill(barrier);
         
         //g.dispose();
