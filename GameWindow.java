@@ -124,10 +124,17 @@ public class GameWindow extends JFrame
         
         if (command.equals(focusB.getText()))
             mainPanel.requestFocus();
+
         
-        
-        if (command.equals(startB.getText()))
+        else if (command.equals("Restart"))
         {
+            gamePanel.restartGame();
+        }
+
+
+        else if (command.equals(startB.getText()))
+        {
+            startB.setText("Restart");
             heartPanel.draw(hearts);
             coinPanel.draw(coins);
             
@@ -136,7 +143,7 @@ public class GameWindow extends JFrame
         }
         
         
-        if (command.equals(exitB.getText()))
+        else if (command.equals(exitB.getText()))
             System.exit(0);
 
         mainPanel.requestFocus();
@@ -204,6 +211,22 @@ public class GameWindow extends JFrame
     {
         coinPanel.erase();
         coins++;
+        coinPanel.draw(coins);
+    }
+
+
+    public void setHearts(int h)
+    {
+        heartPanel.erase();
+        hearts = h;
+        heartPanel.draw(hearts);
+    }
+
+
+    public void setCoins(int c)
+    {
+        coinPanel.erase();
+        coins = c;
         coinPanel.draw(coins);
     }
 }
