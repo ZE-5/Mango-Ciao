@@ -171,7 +171,7 @@ public class GamePanel extends JPanel implements Runnable
        g2.dispose();
 
        SoundManager soundManager = SoundManager.getInstance();
-       soundManager.stopClip("background");
+       soundManager.stopAllClips();
        soundManager.playClip("win", false);
    }
    
@@ -193,7 +193,7 @@ public class GamePanel extends JPanel implements Runnable
        g2.dispose();
 
        SoundManager soundManager = SoundManager.getInstance();
-       soundManager.stopClip("background");
+       soundManager.stopAllClips();
        soundManager.playClip("lose", false);
    }
 
