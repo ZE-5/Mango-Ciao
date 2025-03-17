@@ -8,14 +8,23 @@ public class Barrier extends Thread
 {
     Rectangle2D.Double barrier;
     JPanel panel;
+    Color colour;
     
     public Barrier(JPanel panel, int x, int y, int width, int height)
     {
         this.panel = panel;
         barrier = new Rectangle2D.Double(x, y, width, height);
+        colour = Color.GRAY;
     }
 
 
+    public Barrier(JPanel panel, int x, int y, int width, int height, Color color)
+    {
+        this(panel, x, y, width, height);
+        this.colour = color;
+    }
+    
+    
     public int[] getPosition()
     {
         int[] pos = {(int) barrier.getX(), (int) barrier.getY()};
@@ -52,7 +61,7 @@ public class Barrier extends Thread
         // Graphics g = panel.getGraphics();
         // Graphics2D g2 = (Graphics2D) g;
         
-        g2.setColor(Color.GRAY);
+        g2.setColor(colour);
         g2.fill(barrier);
         
         //g.dispose();

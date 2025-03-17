@@ -366,13 +366,15 @@ public class GamePanel extends JPanel implements Runnable
    
    
    public void mangoDied()
-   {
-       
+   {       
        SoundManager.getInstance().playClip("hurt", 0.7f);
        gameWindow.minusHeart();
        resetMangoJumping();
        mango.place(mangoStartingPosition[0], mangoStartingPosition[1]);
        resetLasers();
+
+       for (int i = 0; i!= 3; i++)
+            keys[i] = false;
    }
    
    
@@ -507,6 +509,42 @@ public class GamePanel extends JPanel implements Runnable
                coins.add(new Coin(this, 670, 440));
                coins.add(new Coin(this, 640, 130));
                
+               break;
+
+
+           case 3:
+               mango.place(10, 470);
+               mangoStartingPosition = mango.getPosition();
+               
+               door = new Door(this, 200, 200);
+
+               int x = 95;
+               barriers.add(new Barrier(this, 0 + x,450,520 - x,30)); //first roof
+               barriers.add(new Barrier(this, 520,120,10,360)); //wall
+               barriers.add(new Barrier(this, 520,470,50,10)); //platform 1
+               barriers.add(new Barrier(this, 630, 380, 30, 10)); // platform 2
+               barriers.add(new Barrier(this, 670, 310, 30, 10)); //platform 3
+               barriers.add(new Barrier(this, 530, 230, 30, 10)); //platform 4
+
+               spikes.add(new Spike(this, x, 450, 0));
+               spikes.add(new Spike(this, 630, 390, 30, 30, 3)); //spike under platform 2
+               spikes.add(new Spike(this, 670, 320, 30, 30, 3)); //spike under platform 3
+               spikes.add(new Spike(this, 530, 240, 30, 30, 3)); //spike under platform 3
+
+               x = 15;
+               int y = 0;
+
+               lasers.add(new Laser(this, 100, 480, 20, 100, 5 - y, 10, 45 - x));
+               lasers.add(new Laser(this, 100 + 50, 480, 20, 100 - y, 10, 10, 40 - x));
+               lasers.add(new Laser(this, 100 + 100, 480, 20, 100 - y, 15, 10, 35 - x));
+               lasers.add(new Laser(this, 100 + 150, 480, 20, 100 - y, 20, 10, 30 - x));
+               lasers.add(new Laser(this, 100 + 200, 480, 20, 100 - y, 25, 10, 25 - x));
+               lasers.add(new Laser(this, 100 + 250, 480, 20, 100 - y, 30, 10, 20 - x));
+               lasers.add(new Laser(this, 100 + 300, 480, 20, 100 - y, 35, 10, 15 - x));
+               lasers.add(new Laser(this, 100 + 350, 480, 20, 100 - y, 40, 10, 10 - x));
+               lasers.add(new Laser(this, 100 + 400, 480, 20, 100 - y, 45, 10, 5 - x));
+               
+               coins.add(new Coin(this, 450, 400));
                break;
                
            default:
