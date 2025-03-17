@@ -50,6 +50,8 @@ public class Laser
     public Laser(JPanel panel, int x, int y, int width, int height, int chargeTime, int fireTime, int chargeDelay)
     {
         this(panel, x, y, width, height, chargeTime, fireTime);
+        if (chargeDelay < 0)
+            chargeDelay = 0;
         this.chargeDelay = chargeDelay;
     }
     

@@ -34,8 +34,6 @@ public class SoundManager {				// a Singleton class
 			// "win.wav",
 			"hurt.wav",
 			"laser.wav",
-			//TODO add jump
-			// "jump.wav",
 			"portal.wav"
 		};
 
